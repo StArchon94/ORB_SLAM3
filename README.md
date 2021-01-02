@@ -1,3 +1,46 @@
+# Quickstart Guide
+## 0. Prerequisites
+- [Docker](https://docs.docker.com/engine/install/)
+- [nvidia-docker2](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html)
+## 1. Clone the parent repo
+```
+git clone https://github.com/ripl-ttic/view-planning.git
+```
+## 2. Checkout the ORB-SLAM3 submodule
+```
+cd view-planning
+git submodule update --init --remote ORB_SLAM3
+```
+## 3. Build the docker image via Dockerfile
+```
+cd ORB_SLAM3
+docker build -t orb-slam3 .
+```
+## 4. Start the docker container
+Let `$VIEW_PLANNING` be the path to view-planning project, `$DATA` be the path to the data directory,
+```
+docker run --gpus all --rm -it -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY -e XAUTHORITY -e NVIDIA_DRIVER_CAPABILITIES=all -v $VIEW_PLANNING/ORB_SLAM3:/root/code/ORB_SLAM3 -v $VIEW_PLANNING/cam_pub:/root/code/cam_pub -v $DATA:/root/data orb-slam3
+```
+## 5. Build ORB-SLAM3
+This is only required once.
+```
+cd /root/code/ORB_SLAM3
+./build.sh
+./buid_ros.sh
+```
+## 6. Run ORB-SLAM3 ROS node
+Note that you may need to use _tmux_ (already included) to manage multiple terminal sessions within the container.
+```
+roscore
+cd /root/code/ORB_SLAM3
+rosrun ORB_SLAM3 Mono Vocabulary/ORBvoc.txt Examples/Monocular/ttic.yaml
+```
+## 7. Publish to the `/camera/image_raw` topic
+```
+python /root/code/cam_pub/video_pub.py
+```
+## See below for more detailed info by the original authors.
+
 # ORB-SLAM3
 
 ### V0.3: Beta version, 4 Sep 2020
