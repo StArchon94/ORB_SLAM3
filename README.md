@@ -2,6 +2,7 @@
 ## 0. Prerequisites
 - [Docker](https://docs.docker.com/engine/install/)
 - [nvidia-docker2](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html)
+- [x-docker](https://github.com/afdaniele/x-docker)
 ## 1. Clone the parent repo
 ```
 git clone https://github.com/ripl-ttic/view-planning.git
@@ -19,7 +20,7 @@ docker build -t orb-slam3 .
 ## 4. Start the docker container
 Let `$VIEW_PLANNING` be the path to view-planning project, `$DATA` be the path to the data directory,
 ```
-docker run --gpus all --rm -it -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY -e XAUTHORITY -e NVIDIA_DRIVER_CAPABILITIES=all -v $VIEW_PLANNING/ORB_SLAM3:/root/code/ORB_SLAM3 -v $VIEW_PLANNING/cam_pub:/root/code/cam_pub -v $DATA:/root/data orb-slam3
+x-docker run --rm -it --gpus all -e NVIDIA_DRIVER_CAPABILITIES=all -v $VIEW_PLANNING/ORB_SLAM3:/root/code/ORB_SLAM3 -v $VIEW_PLANNING/cam_pub:/root/code/cam_pub -v $DATA:/root/data orb-slam3
 ```
 ## 5. Build ORB-SLAM3
 This is only required once.
